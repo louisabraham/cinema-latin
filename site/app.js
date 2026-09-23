@@ -170,7 +170,7 @@ function rowHTML(s) {
       <h3>${esc(f.title)}</h3>
       ${lbl ? `<div class="sub">${esc(lbl)}</div>` : ""}
       <div class="sub">${esc(facts(f))}</div>
-      <div class="where">${esc(c.name)}${d != null ? `<span class="dist">${fmtDist(d)}</span>` : ""}${tags}</div>
+      <div class="where">${esc(c.short || c.name)}${d != null ? `<span class="dist">${fmtDist(d)}</span>` : ""}${tags}</div>
     </div>
     <div class="side">${s.version ? `<span class="badge ${s.version === "VO" ? "vo" : ""}">${s.version}</span>` : ""}${scoreHTML(f)}</div>
   </button>`;
