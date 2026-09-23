@@ -1,0 +1,14 @@
+{
+  "name": "Ciné Latin",
+  "short_name": "Ciné Latin",
+  "description": "Prochaines séances des cinémas de répertoire du Quartier Latin",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f3efe4",
+  "theme_color": "#f3efe4",
+  "lang": "fr",
+  "icons": [
+    {"src": "icon.png", "sizes": "180x180", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"}
+  ]
+}

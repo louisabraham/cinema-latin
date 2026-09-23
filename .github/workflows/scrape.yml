@@ -1,0 +1,52 @@
+name: Scrape and deploy
+
+on:
+  schedule:
+    - cron: "15 4 * * *"   # every day, 06:15 Paris (summer time)
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - name: Scrape all cinemas
+        run: uv run python -m scrapers.run
+      - name: Summary
+        run: |
+          python3 - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          d = json.load(open("site/data/showtimes.json"))
+          print(f"**{len(d['showtimes'])} séances, {len(d['films'])} films**\n")
+          print("| salle | source | séances | erreur |\n|---|---|---|---|")
+          for c in d["cinemas"]:
+              print(f"| {c['name']} | {c['source']} | {c['count']} | {c.get('error', '')} |")
+          PY
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

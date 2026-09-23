@@ -1,6 +1,7 @@
 """Écoles Cinéma Club — https://pariscinemaclub.com/"""
 
-from ..common import Cinema, show
+from ..common import Cinema
+from ..platforms import pariscinemaclub
 
 CINEMA = Cinema(
     id='ecoles-cinema-club',
@@ -16,4 +17,5 @@ CINEMA = Cinema(
 
 
 def scrape() -> list[dict]:
-    raise NotImplementedError
+    # schedule from the Cotecine booking site, metadata from pariscinemaclub.com
+    return pariscinemaclub.scrape(CINEMA.id, sub='ecolescinemaclub', wp_cinema=29)

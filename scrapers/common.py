@@ -63,11 +63,15 @@ class Cinema:
         return asdict(self)
 
 
-def get(url: str, retries: int = 3, **kw) -> requests.Response:
+def get(url: str, retries: int = 6, **kw) -> requests.Response:
     kw.setdefault("timeout", 30)
     for i in range(retries):
         try:
             r = SESSION.get(url, **kw)
+            if r.status_code == 429 and i < retries - 1:
+                wait = r.headers.get("Retry-After", "")
+                time.sleep(float(wait) if wait.isdigit() else 5 * (i + 1))
+                continue
             r.raise_for_status()
             return r
         except requests.RequestException:
@@ -210,7 +214,7 @@ def show(cinema: str, title: str, start: datetime, **extra) -> dict:
 
 def norm_title(s: str) -> str:
     """Normalized key for title matching."""
-    s = strip_accents(s.lower())
+    s = strip_accents(s.lower()).replace("œ", "oe").replace("æ", "ae")
     s = re.sub(r"\((vo|vf|vostf|version restauree|4k|reprise)[^)]*\)", " ", s)
     s = re.sub(r"^(le|la|les|l'|the|un|une|a)\s+", "", s)
     s = re.sub(r"[^a-z0-9]+", " ", s)

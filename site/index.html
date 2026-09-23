@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ciné Latin</title>
+<meta name="description" content="Prochaines séances des cinémas de répertoire et d'art et essai du Quartier Latin et d'ailleurs à Paris.">
+<meta name="theme-color" content="#f3efe4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23f3efe4'/><circle cx='11' cy='11' r='8' fill='%23e3311d'/><rect x='16' y='16' width='14' height='14' fill='%231d3fbb'/><path d='M2 30 L14 30 L8 19Z' fill='%23f2c200'/></svg>">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="#" aria-label="Ciné Latin, accueil">
+    <span class="shapes" aria-hidden="true"><i class="c"></i><i class="s"></i><i class="t"></i></span>
+    <span class="word">Ciné<br>Latin</span>
+  </a>
+  <nav class="views" role="tablist">
+    <button role="tab" data-view="seances" aria-selected="true">Séances</button>
+    <button role="tab" data-view="films">Films</button>
+    <button role="tab" data-view="cinemas">Salles</button>
+  </nav>
+</header>
+
+<div class="days" id="days" role="tablist" aria-label="Jour"></div>
+<section class="controls" id="controls">
+  <label class="search"><span class="sr">Rechercher</span><input id="q" type="search" placeholder="Film, réalisateur, acteur…" autocomplete="off"></label>
+  <div class="filters">
+    <div class="seg" id="zone" role="group" aria-label="Zone">
+      <button data-zone="Quartier Latin" aria-pressed="true">Quartier latin</button>
+      <button data-zone="all" aria-pressed="false">Tout Paris</button>
+    </div>
+    <button class="tog" id="f-vo" aria-pressed="false">VO</button>
+    <button class="tog" id="f-old" aria-pressed="false" title="Films de plus de 20 ans">Classiques</button>
+    <button class="tog" id="f-near" aria-pressed="false" title="Trier par distance">Près de moi</button>
+  </div>
+  <div class="chips" id="chips" aria-label="Salles"></div>
+</section>
+
+<main id="main" aria-live="polite"></main>
+
+<footer class="foot">
+  <p id="meta"></p>
+  <p>Données : sites des salles, <a href="https://www.allocine.fr">Allociné</a>, notes via <a href="https://paris-cine.info">paris-cine.info</a>. Vérifiez l'horaire sur le site de la salle avant de partir.</p>
+</footer>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet-bg" data-close></div>
+  <article class="sheet-card" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <button class="close" data-close aria-label="Fermer">×</button>
+    <div id="sheet-body"></div>
+  </article>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

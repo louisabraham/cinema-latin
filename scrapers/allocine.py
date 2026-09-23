@@ -9,6 +9,8 @@ Used for three things:
 from __future__ import annotations
 
 import re
+import threading
+import time
 from datetime import datetime
 from functools import lru_cache
 from urllib.parse import quote
@@ -18,7 +20,17 @@ from .common import get, parse_duration, show, to_paris, window
 BASE = "https://www.allocine.fr"
 
 
+_lock = threading.Lock()
+_last = [0.0]
+MIN_INTERVAL = 0.6  # seconds between two Allociné requests, all threads together
+
+
 def _json(path: str) -> dict:
+    with _lock:
+        wait = _last[0] + MIN_INTERVAL - time.monotonic()
+        if wait > 0:
+            time.sleep(wait)
+        _last[0] = time.monotonic()
     r = get(BASE + path, headers={"Accept": "application/json"})
     return r.json()
 
@@ -59,6 +71,7 @@ def movie_meta(m: dict) -> dict:
     }
 
 
+@lru_cache(maxsize=None)
 def theater_day(code: str, day) -> list[dict]:
     """All results (movie + showtimes) for one theater and one day, all pages."""
     out, page = [], 1
@@ -113,14 +126,17 @@ def theater_movies(code: str, days: int = 14) -> dict[int, dict]:
     return out
 
 
-@lru_cache(maxsize=None)
 def search(query: str) -> list[dict]:
     """Autocomplete search. Returns [{'id', 'title', 'original_title', 'year', 'directors'}]."""
-    q = quote(query.strip()[:80])
     try:
-        d = _json(f"/_/autocomplete/mobile/movie/{q}")
+        return _search(query.strip()[:80])
     except Exception:
         return []
+
+
+@lru_cache(maxsize=None)  # failures raise, so they are not cached
+def _search(query: str) -> list[dict]:
+    d = _json(f"/_/autocomplete/mobile/movie/{quote(query)}")
     out = []
     for r in d.get("results") or []:
         if r.get("entity_type") != "movie":
@@ -143,6 +159,8 @@ def movie_page(allocine_id: int) -> dict:
     from bs4 import BeautifulSoup
     import json
 
+    with _lock:
+        time.sleep(MIN_INTERVAL)
     r = get(f"{BASE}/film/fichefilm_gen_cfilm={allocine_id}.html")
     s = BeautifulSoup(r.content, "lxml")
     meta: dict = {"allocine_id": allocine_id}

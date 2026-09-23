@@ -1,6 +1,7 @@
 """L'Arlequin — https://www.dulaccinemas.com/cinema/l-arlequin"""
 
-from ..common import Cinema, show
+from ..common import Cinema
+from ..platforms import dulac
 
 CINEMA = Cinema(
     id='arlequin',
@@ -16,4 +17,4 @@ CINEMA = Cinema(
 
 
 def scrape() -> list[dict]:
-    raise NotImplementedError
+    return dulac.scrape(CINEMA.id, "L'Arlequin")

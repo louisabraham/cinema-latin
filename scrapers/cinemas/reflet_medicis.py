@@ -1,6 +1,7 @@
 """Reflet Médicis — https://www.dulaccinemas.com/cinema/reflet-medicis/2950"""
 
-from ..common import Cinema, show
+from ..common import Cinema
+from ..platforms import dulac
 
 CINEMA = Cinema(
     id='reflet-medicis',
@@ -16,4 +17,4 @@ CINEMA = Cinema(
 
 
 def scrape() -> list[dict]:
-    raise NotImplementedError
+    return dulac.scrape(CINEMA.id, 'Reflet Medicis')

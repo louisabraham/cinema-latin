@@ -1,6 +1,7 @@
 """Nouvel Odéon — https://www.nouvelodeon.com/"""
 
-from ..common import Cinema, show
+from ..common import Cinema
+from ..platforms import webedia
 
 CINEMA = Cinema(
     id='nouvel-odeon',
@@ -16,4 +17,4 @@ CINEMA = Cinema(
 
 
 def scrape() -> list[dict]:
-    raise NotImplementedError
+    return webedia.scrape(CINEMA.id, CINEMA.url, CINEMA.allocine)
